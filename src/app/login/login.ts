@@ -1,13 +1,13 @@
-import { Component, inject } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { AuthService } from '../auth.service';
 import { AsyncPipe, NgIf } from '@angular/common';
 
 @Component({
   selector: 'app-login',
-  standalone: true,
   imports: [AsyncPipe, NgIf],
   templateUrl: './login.html',
-  styleUrls: ['./login.scss']
+  styleUrls: ['./login.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class LoginComponent {
   authService = inject(AuthService);

@@ -1,4 +1,4 @@
-import { Component, computed, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, signal } from '@angular/core';
 import { productsData } from '../../data';
 import { RouterLink } from '@angular/router';
 import { FormsModule } from '@angular/forms';
@@ -6,10 +6,10 @@ import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-home',
-  standalone: true,
   imports: [CommonModule, FormsModule, RouterLink],
   templateUrl: './home.html',
-  styleUrls: ['./home.scss']
+  styleUrls: ['./home.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class HomeComponent {
   // State Signals

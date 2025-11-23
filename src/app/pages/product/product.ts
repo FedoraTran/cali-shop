@@ -1,14 +1,14 @@
-import { Component, computed, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, signal } from '@angular/core';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { productsData } from '../../data';
 import { CommonModule, NgOptimizedImage } from '@angular/common';
 
 @Component({
   selector: 'app-product',
-  standalone: true,
   imports: [CommonModule, RouterLink, NgOptimizedImage],
   templateUrl: './product.html',
-  styleUrls: ['./product.scss']
+  styleUrls: ['./product.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ProductComponent {
   // Signals

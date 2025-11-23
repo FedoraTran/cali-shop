@@ -7,10 +7,9 @@ import { AuthService } from '../../auth.service';
 
 @Component({
   selector: 'app-header',
-  standalone: true,
   imports: [RouterLink, AsyncPipe],
   templateUrl: './header.html',
-  styleUrl: './header.scss',
+  styleUrls: ['./header.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class HeaderComponent {
