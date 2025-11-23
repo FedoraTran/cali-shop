@@ -172,3 +172,58 @@
     padding: 3rem 1rem;
     opacity: .7;
 }
+
+/* Thông số kỹ thuật */
+.tech-specs {
+    margin-top: 2.4rem;
+    background: rgba(255,255,255,0.04);
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: var(--radius);
+    padding: 1.4rem 1.2rem 1.6rem;
+}
+
+.tech-specs h3 {
+    margin: 0 0 1rem;
+    font-size: 1.25rem;
+    font-weight: 600;
+    letter-spacing: .5px;
+}
+
+.spec-cat {
+    border-top: 1px solid rgba(255,255,255,.07);
+    padding: .35rem 0 .6rem;
+}
+.spec-cat:first-of-type { border-top: none; }
+
+.spec-cat summary {
+    cursor: pointer;
+    list-style: none;
+    font-weight: 600;
+    padding: .4rem .1rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.spec-cat[open] summary { color: var(--primary); }
+
+.spec-list {
+    margin: .4rem 0 .2rem;
+    display: flex;
+    flex-direction: column;
+    gap: .45rem;
+}
+
+.spec-row {
+    display: grid;
+    grid-template-columns: 180px 1fr;
+    gap: .6rem;
+    font-size: .85rem;
+}
+
+.spec-row dt { font-weight: 600; opacity: .85; }
+.spec-row dd { margin: 0; opacity: .9; }
+
+@media (max-width: 680px) {
+    .spec-row { grid-template-columns: 140px 1fr; }
+}

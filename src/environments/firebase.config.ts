@@ -1,8 +1,9 @@
 export const firebaseConfig = {
-  apiKey: "YOUR_API_KEY",
-  authDomain: "YOUR_AUTH_DOMAIN",
-  projectId: "YOUR_PROJECT_ID",
-  storageBucket: "YOUR_STORAGE_BUCKET",
-  messagingSenderId: "YOUR_MESSAGING_SENDER_ID",
-  appId: "YOUR_APP_ID"
+  apiKey: "AIzaSyCfF1M6_UePQWtf2yka8ByP5u0qo8BYHfs",
+  authDomain: "cali-shop-base.firebaseapp.com",
+  projectId: "cali-shop-base",
+  storageBucket: "cali-shop-base.appspot.com",
+  messagingSenderId: "930200078522",
+  appId: "1:930200078522:web:59df6a963efe2bf30bda83",
+  measurementId: "G-30BHRVV4R3"
 };
