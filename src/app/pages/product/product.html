@@ -78,20 +78,3 @@
     </div>
   }
 </main>
-
-@if (displayedRelatedProducts().length > 0) {
-  <aside class="related-products" aria-labelledby="related-heading">
-    <h3 id="related-heading">Sản phẩm tương tự</h3>
-    <div class="product-grid">
-      @for (item of displayedRelatedProducts(); track item.id) {
-        <a [routerLink]="['/product', item.id]" class="product-card">
-          <img [ngSrc]="item.image" [alt]="item.name" width="200" height="200" class="product-img">
-          <div class="product-info">
-            <h4 class="product-name">{{ item.name }}</h4>
-            <p class="product-price">{{ formatPrice(item.price) }}</p>
-          </div>
-        </a>
-      }
-    </div>
-  </aside>
-}

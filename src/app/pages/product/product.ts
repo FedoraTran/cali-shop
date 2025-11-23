@@ -3,7 +3,7 @@ import { toSignal } from '@angular/core/rxjs-interop';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { CommonModule, NgOptimizedImage } from '@angular/common';
 import { ProductService } from '../../product.service';
-import { map, switchMap } from 'rxjs';
+import { switchMap } from 'rxjs';
 import { Product } from '../../models/product.model';
 
 @Component({
@@ -26,24 +26,6 @@ export class ProductComponent {
 
   readonly product = toSignal(this.productData$);
   readonly activeImage = signal<string | undefined>(undefined);
-
-  // Get related products (same category, excluding the current one)
-  readonly relatedProducts = toSignal(
-    this.productService.getProducts().pipe(
-      map(products => {
-        const currentProduct = this.product();
-        if (!currentProduct) return [];
-        return products.filter(
-          p => p.category === currentProduct.category && p.id !== currentProduct.id
-        );
-      })
-    ), { initialValue: [] as Product[] }
-  );
-
-  // Computed signal for 4 related products to display
-  readonly displayedRelatedProducts = computed(() => {
-    return this.relatedProducts()?.slice(0, 4) || [];
-  });
 
   readonly discountPercent = computed(() => {
     const p = this.product();

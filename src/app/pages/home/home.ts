@@ -1,10 +1,11 @@
 import { ChangeDetectionStrategy, Component, computed, inject, signal } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { FormsModule } from '@angular/forms';
-import { RouterLink, ActivatedRoute, Router } from '@angular/router';
+import { RouterLink, ActivatedRoute } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { Product } from '../../models/product.model';
 import { ProductService } from '../../product.service';
+import { ProductFilterService } from '../../product-filter.service';
 
 @Component({
   selector: 'app-home',
@@ -16,20 +17,19 @@ import { ProductService } from '../../product.service';
 export class HomeComponent {
   private readonly productService = inject(ProductService);
   private readonly route = inject(ActivatedRoute);
-  private readonly router = inject(Router);
+  private readonly filterService = inject(ProductFilterService);
 
   // State Signals
-  activeCategory = signal('all');
-  keyword = signal('');
-  sortMode = signal('default');
-  showCategoryMenu = signal(false);
+  readonly activeCategory = signal('all');
+  readonly keyword = this.filterService.keyword;
+  readonly sortMode = this.filterService.sortMode;
 
   private readonly products = toSignal(this.productService.getProducts(), {
     initialValue: [] as Product[],
   });
 
   // Computed Signal for filtered and sorted products
-  filteredProducts = computed(() => {
+  readonly filteredProducts = computed(() => {
     const category = this.activeCategory();
     const search = this.keyword().trim().toLowerCase();
     const sort = this.sortMode();
@@ -49,21 +49,8 @@ export class HomeComponent {
     return products;
   });
 
-  // Methods to update state
-  setCategory(category: string) {
-    this.activeCategory.set(category);
-    // Đóng menu sau khi chọn
-    this.showCategoryMenu.set(false);
-    // Cập nhật query param để đồng bộ URL (có thể share link)
-    this.router.navigate([], { queryParams: { cat: category === 'all' ? null : category }, queryParamsHandling: 'merge' });
-  }
-
-  toggleCategoryMenu() {
-    this.showCategoryMenu.update(v => !v);
-  }
-
   constructor() {
-    // Đồng bộ category từ query param 'cat'
+    // Sync category from 'cat' query param
     this.route.queryParamMap.subscribe(map => {
       const cat = map.get('cat');
       if (cat && ['gaming','van-phong','design'].includes(cat)) {
