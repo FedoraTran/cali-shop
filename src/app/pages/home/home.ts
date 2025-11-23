@@ -1,6 +1,6 @@
 import { Component, computed, signal } from '@angular/core';
 import { productsData } from '../../data';
-import { RouterLink } from '@angular/router';
+import { RouterLink, ActivatedRoute, Router } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 
@@ -16,6 +16,7 @@ export class HomeComponent {
   activeCategory = signal('all');
   keyword = signal('');
   sortMode = signal('default');
+  showCategoryMenu = signal(false);
 
   // Computed Signal for filtered and sorted products
   filteredProducts = computed(() => {
@@ -41,6 +42,26 @@ export class HomeComponent {
   // Methods to update state
   setCategory(category: string) {
     this.activeCategory.set(category);
+    // Đóng menu sau khi chọn
+    this.showCategoryMenu.set(false);
+    // Cập nhật query param để đồng bộ URL (có thể share link)
+    this.router.navigate([], { queryParams: { cat: category === 'all' ? null : category }, queryParamsHandling: 'merge' });
+  }
+
+  toggleCategoryMenu() {
+    this.showCategoryMenu.update(v => !v);
+  }
+
+  constructor(private route: ActivatedRoute, private router: Router) {
+    // Đồng bộ category từ query param 'cat'
+    this.route.queryParamMap.subscribe(map => {
+      const cat = map.get('cat');
+      if (cat && ['gaming','van-phong','design'].includes(cat)) {
+        this.activeCategory.set(cat);
+      } else if (!cat) {
+        this.activeCategory.set('all');
+      }
+    });
   }
 
   // Helper methods for template

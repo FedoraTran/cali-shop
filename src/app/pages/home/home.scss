@@ -1,37 +1,87 @@
+
 .filters {
   display: flex;
   flex-direction: column;
   align-items: center;
   gap: .8rem;
   margin: 0 1rem 1.2rem;
-  
-  .categories {
+
+  .category-menu {
+    position: relative;
     display: flex;
-    justify-content: center;
-    gap: .6rem;
-    flex-wrap: wrap;
+    align-items: center;
+    gap: .8rem;
   }
 
-  .cat-btn {
+  .hamburger {
+    width: 42px;
+    height: 42px;
+    background: var(--bg-alt);
+    border: 1px solid #334155;
+    border-radius: var(--radius);
+    cursor: pointer;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 6px;
+    transition: var(--transition);
+    padding: 0;
+
+    span {
+      display: block;
+      width: 60%;
+      height: 3px;
+      background: var(--text);
+      border-radius: 2px;
+      transition: transform .3s ease;
+    }
+
+    &:hover { background: #243757; }
+    &[aria-expanded="true"] { outline: 2px solid var(--primary); }
+  }
+
+  .current-label {
+    font-size: .85rem;
+    letter-spacing: .5px;
+    background: var(--bg-alt);
+    padding: .55rem .9rem;
+    border: 1px solid #334155;
+    border-radius: var(--radius);
+  }
+
+  .menu-panel {
+    position: absolute;
+    top: 110%;
+    left: 0;
+    background: #0f1e33;
+    border: 1px solid #334155;
+    border-radius: var(--radius);
+    padding: .5rem .6rem;
+    display: flex;
+    flex-direction: column;
+    gap: .4rem;
+    min-width: 140px;
+    box-shadow: 0 10px 24px -6px rgba(0,0,0,.55);
+    z-index: 20;
+  }
+
+  .menu-panel button {
     background: var(--bg-alt);
     color: var(--text);
     border: 1px solid #334155;
-    padding: .55rem .95rem;
-    font-size: .9rem;
-    border-radius: var(--radius);
+    padding: .45rem .6rem;
+    font-size: .75rem;
+    border-radius: 6px;
     cursor: pointer;
-    letter-spacing: .5px;
-    transition: var(--transition);
-
-    &:hover {
-      background: #243757;
-    }
-
+    text-align: left;
+    letter-spacing: .4px;
+    &:hover { background: #243757; }
     &.active {
       background: var(--primary);
-      border-color: var(--primary);
       color: #0c1a25;
       font-weight: 600;
+      border-color: var(--primary);
     }
   }
 
