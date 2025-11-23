@@ -5,18 +5,18 @@
         <div class="gallery">
           @if (activeImage(); as mainImg) {
             <div class="main-img">
-              <img [ngSrc]="mainImg" [alt]="p.title" width="500" height="500" priority>
+              <img [ngSrc]="mainImg" [alt]="p.name" width="500" height="500" priority>
             </div>
           }
           @if (p.images && p.images.length > 0) {
             <div class="thumbs" role="group" aria-label="Ảnh sản phẩm">
               @for (img of p.images; track img; let i = $index) {
-                <button 
-                  class="thumb" 
-                  [class.active]="img === activeImage()" 
+                <button
+                  class="thumb"
+                  [class.active]="img === activeImage()"
                   (click)="setActiveImage(img)"
                   [attr.aria-label]="'Ảnh ' + (i + 1)">
-                  <img [ngSrc]="img" [alt]="p.title + ' hình ' + (i + 1)" width="80" height="80">
+                  <img [ngSrc]="img" [alt]="p.name + ' hình ' + (i + 1)" width="80" height="80">
                 </button>
               }
             </div>
@@ -26,8 +26,10 @@
           <div class="badges">
             <span class="badge" [class]="p.category">{{ labelCategory(p.category) }}</span>
           </div>
-          <h2 class="detail-title">{{ p.title }}</h2>
-          <p class="detail-desc">{{ p.desc }}</p>
+          <h2 class="detail-title">{{ p.name }}</h2>
+          @if(p.desc) {
+            <p class="detail-desc">{{ p.desc }}</p>
+          }
           <div class="price-block">
             <span class="price">{{ formatPrice(p.price) }}</span>
             @if (p.oldPrice) {
@@ -37,11 +39,13 @@
               <span class="discount-badge">-{{ discountPercent() }}%</span>
             }
           </div>
-          <div class="detail-specs">
-            @for (spec of p.specs; track spec) {
-              <span class="badge">{{ spec }}</span>
-            }
-          </div>
+          @if(p.specs) {
+            <div class="detail-specs">
+              @for (spec of p.specs; track spec) {
+                <span class="badge">{{ spec }}</span>
+              }
+            </div>
+          }
           <div class="actions-row">
             <button class="buy-btn">MUA NGAY</button>
             <a routerLink="/" class="back-btn">Quay lại</a>
@@ -74,3 +78,20 @@
     </div>
   }
 </main>
+
+@if (displayedRelatedProducts().length > 0) {
+  <aside class="related-products" aria-labelledby="related-heading">
+    <h3 id="related-heading">Sản phẩm tương tự</h3>
+    <div class="product-grid">
+      @for (item of displayedRelatedProducts(); track item.id) {
+        <a [routerLink]="['/product', item.id]" class="product-card">
+          <img [ngSrc]="item.image" [alt]="item.name" width="200" height="200" class="product-img">
+          <div class="product-info">
+            <h4 class="product-name">{{ item.name }}</h4>
+            <p class="product-price">{{ formatPrice(item.price) }}</p>
+          </div>
+        </a>
+      }
+    </div>
+  </aside>
+}

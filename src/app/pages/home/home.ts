@@ -1,8 +1,10 @@
-import { ChangeDetectionStrategy, Component, computed, signal } from '@angular/core';
-import { productsData } from '../../data';
-import { RouterLink, ActivatedRoute, Router } from '@angular/router';
+import { ChangeDetectionStrategy, Component, computed, inject, signal } from '@angular/core';
+import { toSignal } from '@angular/core/rxjs-interop';
 import { FormsModule } from '@angular/forms';
+import { RouterLink, ActivatedRoute, Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
+import { Product } from '../../models/product.model';
+import { ProductService } from '../../product.service';
 
 @Component({
   selector: 'app-home',
@@ -12,11 +14,19 @@ import { CommonModule } from '@angular/common';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class HomeComponent {
+  private readonly productService = inject(ProductService);
+  private readonly route = inject(ActivatedRoute);
+  private readonly router = inject(Router);
+
   // State Signals
   activeCategory = signal('all');
   keyword = signal('');
   sortMode = signal('default');
   showCategoryMenu = signal(false);
+
+  private readonly products = toSignal(this.productService.getProducts(), {
+    initialValue: [] as Product[],
+  });
 
   // Computed Signal for filtered and sorted products
   filteredProducts = computed(() => {
@@ -24,9 +34,9 @@ export class HomeComponent {
     const search = this.keyword().trim().toLowerCase();
     const sort = this.sortMode();
 
-    let products = productsData.filter(p => {
+    let products = this.products().filter(p => {
       const matchCategory = category === 'all' || p.category === category;
-      const matchKeyword = !search || p.title.toLowerCase().includes(search);
+      const matchKeyword = !search || p.name.toLowerCase().includes(search);
       return matchCategory && matchKeyword;
     });
 
@@ -52,7 +62,7 @@ export class HomeComponent {
     this.showCategoryMenu.update(v => !v);
   }
 
-  constructor(private route: ActivatedRoute, private router: Router) {
+  constructor() {
     // Đồng bộ category từ query param 'cat'
     this.route.queryParamMap.subscribe(map => {
       const cat = map.get('cat');

@@ -1,22 +1,10 @@
-import { ChangeDetectionStrategy, Component, computed, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, inject, signal, effect } from '@angular/core';
+import { toSignal } from '@angular/core/rxjs-interop';
 import { ActivatedRoute, RouterLink } from '@angular/router';
-import { productsData } from '../../data';
 import { CommonModule, NgOptimizedImage } from '@angular/common';
-
-// Interfaces để làm rõ kiểu dữ liệu sản phẩm & thông số kỹ thuật
-export interface ProductSpecItem { label: string; value: string; }
-export interface ProductSpecCategory { name: string; items: ProductSpecItem[]; }
-export interface Product {
-  id: number;
-  title: string;
-  category: string;
-  price: number;
-  oldPrice?: number;
-  specs: string[];
-  desc: string;
-  images: string[];
-  techSpecs?: ProductSpecCategory[];
-}
+import { ProductService } from '../../product.service';
+import { map, switchMap } from 'rxjs';
+import { Product } from '../../models/product.model';
 
 @Component({
   selector: 'app-product',
@@ -26,49 +14,61 @@ export interface Product {
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ProductComponent {
-  // Signals
-  product = signal<Product | null>(null);
-  activeImage = signal<string | null>(null);
-  // Hiển thị / ẩn toàn bộ khối thông số kỹ thuật (có thể mở rộng nếu cần tab sau này)
-  showTechSpecs = signal<boolean>(true);
+  private readonly productService = inject(ProductService);
+  private readonly route = inject(ActivatedRoute);
 
-  // Computed values
-  discountPercent = computed(() => {
-    const p = this.product();
-    if (!p || !p.oldPrice) return 0;
-    return Math.round((p.oldPrice - p.price) / p.oldPrice * 100);
+  private readonly productData$ = this.route.paramMap.pipe(
+    switchMap(params => {
+      const id = Number(params.get('id'));
+      return this.productService.getProductById(id);
+    })
+  );
+
+  readonly product = toSignal(this.productData$);
+  readonly activeImage = signal<string | undefined>(undefined);
+
+  // Get related products (same category, excluding the current one)
+  readonly relatedProducts = toSignal(
+    this.productService.getProducts().pipe(
+      map(products => {
+        const currentProduct = this.product();
+        if (!currentProduct) return [];
+        return products.filter(
+          p => p.category === currentProduct.category && p.id !== currentProduct.id
+        );
+      })
+    ), { initialValue: [] as Product[] }
+  );
+
+  // Computed signal for 4 related products to display
+  readonly displayedRelatedProducts = computed(() => {
+    return this.relatedProducts()?.slice(0, 4) || [];
   });
 
-  hasTechSpecs = computed(() => !!this.product()?.techSpecs?.length);
+  readonly discountPercent = computed(() => {
+    const p = this.product();
+    if (!p || !p.oldPrice) return 0;
+    return Math.round(((p.oldPrice - p.price) / p.oldPrice) * 100);
+  });
 
-  constructor(private route: ActivatedRoute) {
-    this.route.paramMap.subscribe(params => {
-      const id = parseInt(params.get('id')!, 10);
-      const foundProduct = productsData.find(p => p.id === id);
-      
-      if (foundProduct) {
-        this.product.set(foundProduct);
-        if (foundProduct.images && foundProduct.images.length > 0) {
-          this.activeImage.set(foundProduct.images[0]);
-        } else {
-          this.activeImage.set(null);
-        }
-      } else {
-        this.product.set(null);
-      }
+  readonly hasTechSpecs = computed(() => !!this.product()?.techSpecs?.length);
+  readonly showTechSpecs = signal<boolean>(true);
+
+  constructor() {
+    effect(() => {
+      this.activeImage.set(this.product()?.image);
     });
   }
 
-  // Methods
-  setActiveImage(url: string) {
-    this.activeImage.set(url);
+  formatPrice(price: number | undefined): string {
+    if (price === undefined) {
+      return '';
+    }
+    return price.toLocaleString('vi-VN') + '₫';
   }
 
-  toggleTechSpecs() {
-    this.showTechSpecs.update(v => !v);
-  }
-
-  labelCategory(cat: string): string {
+  labelCategory(cat: string | undefined): string {
+    if (!cat) return '';
     switch (cat) {
       case "gaming": return "Gaming";
       case "van-phong": return "Văn Phòng";
@@ -77,7 +77,11 @@ export class ProductComponent {
     }
   }
 
-  formatPrice(price: number): string {
-    return price.toLocaleString("vi-VN") + "₫";
+  toggleTechSpecs() {
+    this.showTechSpecs.update(v => !v);
+  }
+
+  setActiveImage(img: string) {
+    this.activeImage.set(img);
   }
 }

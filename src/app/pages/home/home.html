@@ -4,25 +4,32 @@
   @if (filteredProducts().length > 0) {
     @for (p of filteredProducts(); track p.id) {
       <article class="product-card" [class]="p.category" [attr.data-category]="p.category" [attr.data-price]="p.price">
-        <div class="badges">
-          <span class="badge" [class]="p.category">{{ labelCategory(p.category) }}</span>
-        </div>
-        <h2 class="product-title">{{ p.title }}</h2>
-        <p class="desc">{{ p.desc }}</p>
-        <div class="specs">
-          @for (s of p.specs; track s) {
-            <span class="badge">{{ s }}</span>
+        <a [routerLink]="['/product', p.id]" class="product-link-wrapper">
+          <img [src]="p.image" [alt]="p.name" class="product-image" loading="lazy">
+          <div class="badges">
+            <span class="badge" [class]="p.category">{{ labelCategory(p.category) }}</span>
+          </div>
+          <h2 class="product-title">{{ p.name }}</h2>
+          @if(p.desc) {
+            <p class="desc">{{ p.desc }}</p>
           }
-        </div>
-        <div class="price-row">
-          <span class="price">{{ formatPrice(p.price) }}</span>
-          @if (p.oldPrice) {
-            <span class="old-price">{{ formatPrice(p.oldPrice) }}</span>
+          @if(p.specs && p.specs.length > 0) {
+            <div class="specs">
+              @for (s of p.specs; track s) {
+                <span class="badge">{{ s }}</span>
+              }
+            </div>
           }
-        </div>
+          <div class="price-row">
+            <span class="price">{{ formatPrice(p.price) }}</span>
+            @if (p.oldPrice) {
+              <span class="old-price">{{ formatPrice(p.oldPrice) }}</span>
+            }
+          </div>
+        </a>
         <div class="actions">
           <button class="btn">Mua ngay</button>
-          <a class="btn secondary" [routerLink]="['/product', p.id]" [ariaLabel]="'Xem chi tiết sản phẩm ' + p.title">Chi tiết</a>
+          <a class="btn secondary" [routerLink]="['/product', p.id]" [ariaLabel]="'Xem chi tiết sản phẩm ' + p.name">Chi tiết</a>
         </div>
       </article>
     }
