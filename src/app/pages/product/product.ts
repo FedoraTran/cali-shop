@@ -3,6 +3,21 @@ import { ActivatedRoute, RouterLink } from '@angular/router';
 import { productsData } from '../../data';
 import { CommonModule, NgOptimizedImage } from '@angular/common';
 
+// Interfaces để làm rõ kiểu dữ liệu sản phẩm & thông số kỹ thuật
+export interface ProductSpecItem { label: string; value: string; }
+export interface ProductSpecCategory { name: string; items: ProductSpecItem[]; }
+export interface Product {
+  id: number;
+  title: string;
+  category: string;
+  price: number;
+  oldPrice?: number;
+  specs: string[];
+  desc: string;
+  images: string[];
+  techSpecs?: ProductSpecCategory[];
+}
+
 @Component({
   selector: 'app-product',
   imports: [CommonModule, RouterLink, NgOptimizedImage],
@@ -12,8 +27,10 @@ import { CommonModule, NgOptimizedImage } from '@angular/common';
 })
 export class ProductComponent {
   // Signals
-  product = signal<any>(null);
+  product = signal<Product | null>(null);
   activeImage = signal<string | null>(null);
+  // Hiển thị / ẩn toàn bộ khối thông số kỹ thuật (có thể mở rộng nếu cần tab sau này)
+  showTechSpecs = signal<boolean>(true);
 
   // Computed values
   discountPercent = computed(() => {
@@ -21,6 +38,8 @@ export class ProductComponent {
     if (!p || !p.oldPrice) return 0;
     return Math.round((p.oldPrice - p.price) / p.oldPrice * 100);
   });
+
+  hasTechSpecs = computed(() => !!this.product()?.techSpecs?.length);
 
   constructor(private route: ActivatedRoute) {
     this.route.paramMap.subscribe(params => {
@@ -43,6 +62,10 @@ export class ProductComponent {
   // Methods
   setActiveImage(url: string) {
     this.activeImage.set(url);
+  }
+
+  toggleTechSpecs() {
+    this.showTechSpecs.update(v => !v);
   }
 
   labelCategory(cat: string): string {

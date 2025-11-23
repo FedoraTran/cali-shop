@@ -1,13 +1,27 @@
 <header class="header">
   <div class="container">
     <div class="header-inner">
-      <a routerLink="/" class="header__logo">
-        <img src="assets/images/logo.svg" alt="Cali Shop" />
-      </a>
+      <div class="left-cluster">
+        <button class="hamburger" (click)="toggleCategoryMenu()" [attr.aria-expanded]="showCategoryMenu()" aria-controls="catMenu" aria-label="Chọn danh mục sản phẩm">
+          <span></span><span></span><span></span>
+        </button>
+        <a routerLink="/" class="header__logo" aria-label="Trang chủ Cali Shop">
+          <img src="https://cdn.discordapp.com/attachments/895855847744368706/1442050747062550559/image0.jpg?ex=692405ea&is=6922b46a&hm=19c0fec0d5bbf4e0c771bd274edfaead54ff58de451c0aaa98f3f7712e0664f3&" alt="Cali Shop" class="logo-img"/>
+          <span class="brand-text">Cali Shop</span>
+        </a>
+        <div class="current-cat" [attr.data-active]="activeCategory()">{{ currentCategoryLabel() }}</div>
+        @if (showCategoryMenu()) {
+          <div id="catMenu" class="menu-panel" role="menu" aria-label="Danh mục sản phẩm">
+            @for (c of categories; track c.key) {
+              <button role="menuitemradio" [attr.aria-checked]="activeCategory() === c.key" (click)="selectCategory(c.key)" [class.active]="activeCategory() === c.key">{{ c.label }}</button>
+            }
+          </div>
+        }
+      </div>
 
       <div class="header-search">
-        <input type="text" placeholder="Bạn cần tìm gì?" />
-        <button class="btn">
+        <input type="text" placeholder="Bạn cần tìm gì?" aria-label="Tìm kiếm" />
+        <button class="btn" aria-label="Tìm kiếm">
           <i class="fa-solid fa-magnifying-glass"></i>
         </button>
       </div>

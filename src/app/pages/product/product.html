@@ -48,6 +48,24 @@
           </div>
         </div>
       </div>
+      @if (hasTechSpecs() && showTechSpecs()) {
+        <section class="tech-specs" aria-labelledby="specs-heading">
+          <h3 id="specs-heading">Thông số kỹ thuật</h3>
+          @for (cat of p.techSpecs; track cat.name; let i = $index) {
+            <details class="spec-cat" [attr.open]="i === 0 ? '' : null">
+              <summary>{{ cat.name }}</summary>
+              <dl class="spec-list">
+                @for (item of cat.items; track item.label) {
+                  <div class="spec-row">
+                    <dt>{{ item.label }}:</dt>
+                    <dd>{{ item.value }}</dd>
+                  </div>
+                }
+              </dl>
+            </details>
+          }
+        </section>
+      }
     </div>
   } @else {
     <div class="not-found">
