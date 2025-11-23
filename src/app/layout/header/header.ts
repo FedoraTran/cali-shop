@@ -7,10 +7,14 @@ import { AuthService } from '../../auth.service';
 
 @Component({
   selector: 'app-header',
+<<<<<<< HEAD
+  imports: [RouterLink, AsyncPipe],
+=======
   standalone: true,
   imports: [RouterLink, AsyncPipe, CommonModule],
+>>>>>>> b47aed593217ca65d364ba803a1c42c70418a59c
   templateUrl: './header.html',
-  styleUrl: './header.scss',
+  styleUrls: ['./header.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class HeaderComponent {

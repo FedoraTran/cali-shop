@@ -1,4 +1,4 @@
-import { Component, computed, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, signal } from '@angular/core';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { productsData } from '../../data';
 import { CommonModule, NgOptimizedImage } from '@angular/common';
@@ -22,7 +22,8 @@ export interface Product {
   selector: 'app-product',
   imports: [CommonModule, RouterLink, NgOptimizedImage],
   templateUrl: './product.html',
-  styleUrls: ['./product.scss']
+  styleUrls: ['./product.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ProductComponent {
   // Signals
